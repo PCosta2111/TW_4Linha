@@ -59,14 +59,15 @@ function dropCoin(c){
 		let x = -1;
 		for(let i=1; i < rows; i++){
 			if( b[i][c] != -1){
-				alert(i);
+				
 				x=1;
 				drop = i-1;
+				break;
 			}
 		}
 		if( x == -1)
 			drop = rows-1;
-		alert(b[drop][c]);
+		
 		b[drop][c] = playerTurn;
 		
 		if(playerTurn == 0)

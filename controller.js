@@ -11,6 +11,9 @@ function createBoard(){
 	var radios = document.getElementsByName('first');
 
 	
+	alert(radios[0].checked);
+	alert(radios[1].value);
+	
 	if (radios[0].checked && radios[0].value == "f_me")
 		playerTurn = 0;
 	else
@@ -26,7 +29,7 @@ function createBoard(){
 		text += "<div class = \"placer\" onclick='dropCoin(" + c + ")'></div>";
 		for (r = 0; r < rows; r++) {
 			rLine.push(-1);
-			text += "<div id = '" + r + "c" + c + "' class = \"empty\"></div>";
+			text += "<div id = '" + r + "c" + c + "' class = \"cell\"></div>";
 		}
 		b.push(rLine);
 		rLine = [];
@@ -59,7 +62,6 @@ function dropCoin(c){
 		let x = -1;
 		for(let i=1; i < rows; i++){
 			if( b[i][c] != -1){
-				
 				x=1;
 				drop = i-1;
 				break;

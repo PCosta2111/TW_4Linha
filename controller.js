@@ -143,7 +143,6 @@ function cpuDropCoin() {
 	
 	if(newGame < 0)
 		return;
-
     var c = selectRand(cols);
     var drop;
     while(b[0][c] != -1) { 
@@ -172,7 +171,7 @@ function cpuDropCoin() {
 		msgBoard.innerHTML = "CPU has played on column " + (c+1) + ". CPU WINS!!";
 		point[2]++;
 		newGame = -1;
-	}else{
+	}else if(newGame > 0){
 		switchPlayer();
 		msgBoard.innerHTML = "CPU has played on column " + (c+1) + ". It is P1 turn";
 	}

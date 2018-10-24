@@ -14,7 +14,7 @@
 
 }
 #board{
-	display: inline;
+	display: inline-block;
 	float: right;
 	margin-right: 50px;
 }
@@ -72,10 +72,11 @@ body{
 	margin: 75px;
 	margin-top: 10px;
 	padding: 10px;
-	min-height: 100vh;
+	min-height: 125vh;
 	border-style :solid;
 	border-width : 1px;
 	font-family:arial;
+	margin-bottom : 0px;
 }
 
 #box1{
@@ -106,7 +107,7 @@ body{
 }
 
 #giveUp{
-	float: right;
+	float: left;
 	margin-top: 60px;
 	margin-right: 50px;
 	padding: 10px;
@@ -118,6 +119,7 @@ body{
 	display:none;
 	
 }
+
 #giveUp:hover{
 	background-color: black;
 	color: white;
@@ -134,11 +136,11 @@ body{
 	border-radius: 7px;
 }
 
-
 .legenda {
 	padding: 12px 12px 12px 0;
 	display: inline-block;
 }
+
 #settings{
 	margin-top: 100px;
 	display:inline-block;

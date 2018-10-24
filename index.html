@@ -25,28 +25,55 @@
  
 <div id="box2">
     <h2>Points</h2>
-    <div class = "legenda">P1:    P2:      CPU:     </div>
+    <div id = "scores" class = "legenda">
+		P1: 0 </br>
+		P2: 0 </br>
+		CPU: 0 </br>
+	</div>
 </div>
  
 <hr>
-<p></p>
+
+<div id = "msgBoard">
+
+</div>
+
+</br>
 <form onsubmit = "return false;" id = "settings">
    
-    <div class = "legenda">Rows : </div> <input class = "tBox" type = "text" id = "rows"> <br>
-    <div class = "legenda">Columns : </div> <input  class = "tBox" type = "text" id = "cols"> <br>
-    <div class = "legenda">Opponent : </div> Player <input type = "radio" checked="checked" name = "opponent" value = "other_player">
-                                                CPU <input type = "radio" name = "opponent" value = "cpu"> <br>
+    <div class = "legenda">Rows : </div> <select id = "rows">
+										  <option value="4">4</option>
+										  <option value="5">5</option>
+										  <option value="6">6</option>
+										  <option value="7">7</option>
+										  <option value="8">8</option>
+										</select> <br>
+    <div class = "legenda">Columns : </div> <select id = "cols">
+										  <option value="4">4</option>
+										  <option value="5">5</option>
+										  <option value="6">6</option>
+										  <option value="7">7</option>
+										  <option value="8">8</option>
+										</select> <br>
+    <div class = "legenda">Opponent : </div> Player <input type = "radio" name = "opponent" value = "other_player">
+                                                CPU <input type = "radio" checked="checked" name = "opponent" value = "cpu"> <br>
     <div class = "legenda">First : </div> Player 1 <input type = "radio"  checked="checked" name="first" value = "f_me">
                                                 Opponent <input type = "radio" name="first"  value = "f_op"> <br>
     <div class = "legenda">AI difficulty : </div> Easy <input type = "radio"  checked="checked" name="ai_dif"  value = "d_easy">
-                                                Hard <input type = "radio" name="ai_dif" value = "d_hard"> <br>
+                                                Hard (Not implemented) <input type = "radio" name="ai_dif" value = "d_hard"> <br>
    
     <br><input type="submit" onclick="createBoard();" value="Submit">
  
 </form>
  
 <div id = "board" ></div>
- 
-<div id = "currentState"></div>
+
+</br>
+</br>
+</br>
+
+<div id = "currentState" ></div>
+
+<div id = "giveUp" onclick="giveUp();">Give Up</div>
 </body>
 </html>

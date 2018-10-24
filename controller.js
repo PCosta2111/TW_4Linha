@@ -1,18 +1,40 @@
 var b = [];
+var newGame;
 var rows, cols;
 var playerTurn; //0 : ME   1 : OPPONENT
 var opp; // 0 : VS PLAYER   ;   1: VS CPU
 
+var points = [0,0,0]; // 0 - P1    1 - P2    2 - CPU
+var pointsTXT = document.getElementById("scores");							
+
+var msgBoard;		
+
 function createBoard() {
+	newGame = 1;
+	msgBoard = document.getElementById("msgBoard");
+	
+	msgBoard.innerHTML = "";
+	
+	document.getElementById("giveUp").style.display = "block";
+	
+	b = new Array();
+	
     rows = document.getElementById("rows").value;
 
     cols = document.getElementById("cols").value;
-
+	
+	if( rows < 4 || rows > 8 || cols < 4 || cols > 8){
+		alert("Rows and columns must be between 4 and 8");
+		return;
+	}
+	
     var radios = document.getElementsByName('first');
 
     var radios_opp = document.getElementsByName('opponent');
 
-
+	
+	b = new Array(cols);
+	
     //alert(radios[0].checked);
     //alert(radios[1].value);
 
@@ -26,36 +48,36 @@ function createBoard() {
         opp = 0;
     else
         opp = 1;
-
+	
 
     var r;
     var text = "";
     var rLine = [];
 
-
+	for(let l = 0 ; l < rows ; l++){
+		b[l] = new Array(cols);
+		for(let c = 0 ; c < cols ; c++)
+			b[l][c] = -1;
+		
+	}
 
     for (let c = 0; c < cols; c++) {
         text += "<div class = \"column\">";
         text += "<div class = \"placer\" onclick='dropCoin(" + c + ")'></div>";
-        for (r = 0; r < rows; r++) {
-            rLine.push(-1);
+        for (r = 0; r < rows; r++)
             text += "<div id = '" + r + "c" + c + "' class = \"cell\"></div>";
-        }
-        b.push(rLine);
-        rLine = [];
         text += "</div>";
     }
     document.getElementById("board").innerHTML = text;
-
+	
     if (playerTurn == 1 && opp == 1) {
         cpuDropCoin();
-    }
+    }else{
+		msgBoard.innerHTML = "It is P" + (playerTurn+1) + " turn";
+	}
     printCurrenState();
 
 }
-
-
-
 
 function printCurrenState() {
 
@@ -72,6 +94,8 @@ function printCurrenState() {
 }
 
 function dropCoin(c) {
+	if(newGame < 0)
+		return;
     var drop;
     if (b[0][c] != -1) {
         alert("That column is full");
@@ -94,18 +118,31 @@ function dropCoin(c) {
         else
             document.getElementById(drop + "c" + c).style.backgroundColor = "yellow";
 
-        checkWinners();
+        if(checkWinners()){
+			alert("Winner winner chicken dinner");
+			newGame = -1;
+		}
         switchPlayer();
     }
-
-    cpuDropCoin();
-
+    printCurrenState();
+	
+	if(opp == 1){
+		cpuDropCoin();
+		if(checkWinners()){
+			alert("Winner winner bots for dinner");
+			newGame = -1;
+		}
+	}else{
+		msgBoard.innerHTML = "It is P" + (playerTurn+1) + " turn";
+	}
 
 
 }
 
 function cpuDropCoin() {
-
+	
+	if(newGame < 0)
+		return;
 
     var c = selectRand(cols);
     var drop;
@@ -128,9 +165,11 @@ function cpuDropCoin() {
             document.getElementById(drop + "c" + c).style.backgroundColor = "red";
         else
             document.getElementById(drop + "c" + c).style.backgroundColor = "yellow";
-
+		
         checkWinners();
         switchPlayer();
+		
+		msgBoard.innerHTML = "CPU has played on column " + (c+1) + ". It is P1 turn";
     }
 
 
@@ -138,26 +177,63 @@ function cpuDropCoin() {
 
 }
 
-
 function checkWinners() {
 
-    checkRows();
-    checkCols();
-    checkDiag();
+	for(let l=0; l < rows; l++) {
+		for(let c=0; c < cols-3; c++) {
+				if( CompareFour(b[l][c],b[l][c+1],b[l][c+2],b[l][c+3])) 
+					return true;
+			
+		}
+	}
+	// Check Vertical
+	for(let l=0; l < rows-3; l++) {
+		for(let c=0; c < cols; c++) {
+			if( CompareFour(b[l][c],b[l+1][c],b[l+2][c],b[l+3][c])) 
+				return true;
+		}
+	}
+	
+	// Check Diagonal
+	for(let l = 0 ; l < rows-3 ; l++) {
+		for(let c = l+1 ; c < cols-3 ; c++) {
+			if( CompareFour(b[l][c],b[l+1][c+1],b[l+2][c+2],b[l+3][c+3])) 
+				
+				return true;
+		}	
+	}
+	
+	for(let l = 0 ; l < rows-3 ; l++) {
+		for(let c = 0 ; c <= l ; c++) {
+			if( CompareFour(b[l][c],b[l+1][c+1],b[l+2][c+2],b[l+3][c+3])) 
+				return true;
+		}	
+	}
+	
+	
+	for(let l = 0 ; l < rows-3 ; l++) {
+		for(let c = 3 ; c <= cols - 2 - l ; c++) {
+			if( CompareFour(b[l][c],b[l+1][c-1],b[l+2][c-2],b[l+3][c-3])) 
+				return true;
+				
+		}	
+	}
+	/*for(int l = 0 ; l < rows-3 ; l++) {
+		for(int c = 6-l ; c <= 6 ; c++) {
+			if( CompareFour(state.board[l][c],state.board[l+1][c-1],state.board[l+2][c-2],state.board[l+3][c-3])) 
+				return true;
+		}	
+	}*/
 }
 
-
-function checkRows() {
-
+function CompareFour(a,b,c,d){
+	if( a == b == c == d && a != -1){
+		return true;
+	}else{
+		return false;
+	}
 }
 
-function checkCols() {
-
-}
-
-function checkDiag() {
-
-}
 
 function switchPlayer() {
     if (playerTurn == 1)

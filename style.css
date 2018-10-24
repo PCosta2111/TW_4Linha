@@ -75,7 +75,7 @@ body{
 	min-height: 100vh;
 	border-style :solid;
 	border-width : 1px;
-   
+	font-family:arial;
 }
 
 #box1{
@@ -83,22 +83,58 @@ body{
 	top: 100px;
 	left: 100px;
 	width: 260px;
-	height:300px;
+	height:auto;
 	background: #E2E2E2;
 	padding: 20px;
 	display: none;
+	text-align: justify;
+	border-style :solid;
+	border-width : 1px;
 }
 
 #box2{
 	position: absolute;
 	top: 100px;
 	left: 100px;
-	width: 400px;
-	height:100px;
+	width: 260px;
+	height:auto;
 	background: #E2E2E2;
 	padding: 20px;
 	display: none;
+	border-style :solid;
+	border-width : 1px;
 }
+
+#giveUp{
+	float: right;
+	margin-top: 60px;
+	margin-right: 50px;
+	padding: 10px;
+	background-color: gray;
+	color: black;
+	border-radius: 5px;
+	border-style :solid;
+	border-width : 1px;
+	display:none;
+	
+}
+#giveUp:hover{
+	background-color: black;
+	color: white;
+	
+}
+
+#msgBoard{
+	padding: 10px;
+	background-color: #c6c6c6;
+	color: black;
+	text-align: center;
+	font-size: 18px;
+	height : 30px;
+	border-radius: 7px;
+}
+
+
 .legenda {
 	padding: 12px 12px 12px 0;
 	display: inline-block;

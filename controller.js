@@ -134,6 +134,7 @@ function printCurrenState() {
 function dropCoin(c) {
 	if(newGame < 0)
 		return;
+	
     var drop;
     if (b[0][c] != -1) {
         alert("That column is full");
@@ -163,6 +164,7 @@ function dropCoin(c) {
 			else
 				points[1]++;
 			newGame = -1;
+			return;
 		}
         switchPlayer();
 		if(opp == 1){
@@ -208,7 +210,7 @@ function cpuDropCoin() {
 	
 	if(checkWinners(drop,c)){
 		msgBoard.innerHTML = "CPU has played on column " + (c+1) + ". CPU WINS!!";
-		point[2]++;
+		points[2]++;
 		newGame = -1;
 	}else if(newGame > 0){
 		switchPlayer();

@@ -28,17 +28,20 @@ function logIn() {
     var username = document.getElementById("username").value;
     var password = document.getElementById("password").value;
 
-    for(let i = 0; i < objPeople.length; i++) {
+    for (let i = 0; i < objPeople.length; i++) {
+        var l = 0;
         if (username == objPeople[i].username && password == objPeople[i].password) {
             var logForm = document.getElementById("form");
             var logGame = document.getElementById("game");
             alert(username + " logged in!");
             logForm.style.display = 'none';
             logGame.style.display = 'block';
-            
-            
-
+            l = 1;
+            break;
         }
+    }
+    if (l == 0) {
+        alert("Log in failed!");
     }
 }
 

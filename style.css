@@ -59,7 +59,11 @@
 #logo{
 	font-weight:bold;
 	font-size: 200%;
-	margin-bottom: 50px;
+	margin-top: 10px;
+	margin-bottom: 30px;
+	width:400px;
+	height:auto;
+	
 
 }
 

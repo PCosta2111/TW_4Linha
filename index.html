@@ -18,7 +18,7 @@
 <div class="form" id="form">
     <form>
         <input placeholder="username" id="username">
-        <input placeholder="password" id="password">
+        <input type="password" placeholder="password" id="password">
         <button type="button" onclick="logIn()">Log In</button>
     </form>
 </div>
@@ -73,7 +73,7 @@
         <div class="legenda">AI difficulty : </div> Easy <input type="radio" checked="checked" name="ai_dif" value="d_easy">
         Hard (Not implemented) <input type="radio" name="ai_dif" value="d_hard"> <br />
 
-        <br><input type="submit" onclick="createBoard();" value="Submit">
+        <br><input type="submit" id="newGame" value="New game" onclick="createBoard();" value="Submit">
 
     </form>
 

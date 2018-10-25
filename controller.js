@@ -7,7 +7,40 @@ var opp; // 0 : VS PLAYER   ;   1: VS CPU
 var points = [0,0,0]; // 0 - P1    1 - P2    2 - CPU
 var pointsTXT = document.getElementById("scores");							
 
-var msgBoard;		
+var msgBoard;	
+var username;
+var password;
+var logForm;
+var logGame;
+
+var objPeople = [
+    {
+        username: "pedro",
+        password: "4linha"
+    },
+    {
+        username: "guest",
+        password: "guest"
+    }
+]
+
+function logIn() {
+    var username = document.getElementById("username").value;
+    var password = document.getElementById("password").value;
+
+    for(let i = 0; i < objPeople.length; i++) {
+        if (username == objPeople[i].username && password == objPeople[i].password) {
+            var logForm = document.getElementById("form");
+            var logGame = document.getElementById("game");
+            alert(username + " logged in!");
+            logForm.style.display = 'none';
+            logGame.style.display = 'block';
+            
+            
+
+        }
+    }
+}
 
 function createBoard() {
 	newGame = 1;

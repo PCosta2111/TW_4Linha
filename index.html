@@ -1,4 +1,4 @@
-
+﻿
 <!DOCTYPE html>
 <html lang="en">
  
@@ -12,69 +12,77 @@
 </head>
  
 <body>
-<img src="logo.png" id="logo" alt="4-em-linha">
- 
-<div id = "menu">
-    <div class = "button" onclick="document.getElementById('box1').style.display='block'">HELP</div>
-    <div class = "button" onclick="document.getElementById('box2').style.display='block'">POINTS</div>
- 
+
+    <img src="logo.png" id="logo" alt="4-em-linha">
+
+<div class="form" id="form">
+    <form>
+        <input placeholder="username" id="username">
+        <input placeholder="password" id="password">
+        <button type="button" onclick="logIn()">Log In</button>
+    </form>
 </div>
+  
  
-<div id="box1">
-    <h2>Regras</h2>
-    <div class = "legenda"> O quatro em linha joga-se numa grelha (geralmente 7 x 6) colocada na vertical. As peças colocadas numa das aberturas no topo da grelha caiem ao longo de calhas e ocupam a primeira posição livre, seja no fundo da grelha ou sobre outra peça. Cada jogador joga com peças de cor diferente e alternadamente coloca uma peça numa das calhas ainda não completamente preenchidas. Ganha o primeiro jogador que conseguir colocar 4 peças da sua cor alinhadas, na vertical, horizontal ou diagonal.</div>
+<div id="game">
+
+    <div id="menu">
+        <div class="button" onclick="document.getElementById('box1').style.display='block'">HELP</div>
+        <div class="button" onclick="document.getElementById('box2').style.display='block'">POINTS</div>
+
+    </div>
+
+    <div id="box1">
+        <h2>Regras</h2>
+        <div class="legenda"> O quatro em linha joga-se numa grelha (geralmente 7 x 6) colocada na vertical. As peças colocadas numa das aberturas no topo da grelha caiem ao longo de calhas e ocupam a primeira posição livre, seja no fundo da grelha ou sobre outra peça. Cada jogador joga com peças de cor diferente e alternadamente coloca uma peça numa das calhas ainda não completamente preenchidas. Ganha o primeiro jogador que conseguir colocar 4 peças da sua cor alinhadas, na vertical, horizontal ou diagonal.</div>
+    </div>
+
+    <div id="box2">
+        <h2>Points</h2>
+        <div id="scores" class="legenda">
+            P1: 0 <br />
+            P2: 0 <br />
+            CPU: 0 <br />
+        </div>
+    </div>
+
+    <hr>
+    <div id="msgBoard">
+    </div>
+    <br />
+    <form onsubmit="return false;" id="settings">
+
+        <div class="legenda">Rows : </div> <select id="rows">
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+        </select> <br>
+        <div class="legenda">Columns : </div> <select id="cols">
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+        </select> <br>
+        <div class="legenda">Opponent : </div> Player <input type="radio" name="opponent" value="other_player">
+        CPU <input type="radio" checked="checked" name="opponent" value="cpu"> <br />
+        <div class="legenda">First : </div> Player 1 <input type="radio" checked="checked" name="first" value="f_me">
+        Opponent <input type="radio" name="first" value="f_op"> <br />
+        <div class="legenda">AI difficulty : </div> Easy <input type="radio" checked="checked" name="ai_dif" value="d_easy">
+        Hard (Not implemented) <input type="radio" name="ai_dif" value="d_hard"> <br />
+
+        <br><input type="submit" onclick="createBoard();" value="Submit">
+
+    </form>
+
+    <div id="board"></div>
+
+    <div id="currentState" style="display:none;"></div>
+    <br />
+    <div id="giveUp" onclick="giveUp();">Give Up</div>
 </div>
- 
-<div id="box2">
-    <h2>Points</h2>
-    <div id = "scores" class = "legenda">
-		P1: 0 <br/>
-		P2: 0 <br/>
-		CPU: 0 <br/>
-	</div>
-</div>
- 
-<hr>
 
-<div id = "msgBoard">
-
-</div>
-
-<br/>
-<form onsubmit = "return false;" id = "settings">
-   
-    <div class = "legenda">Rows : </div> <select id = "rows">
-										  <option value="4">4</option>
-										  <option value="5">5</option>
-										  <option value="6">6</option>
-										  <option value="7">7</option>
-										  <option value="8">8</option>
-										</select> <br>
-    <div class = "legenda">Columns : </div> <select id = "cols">
-										  <option value="4">4</option>
-										  <option value="5">5</option>
-										  <option value="6">6</option>
-										  <option value="7">7</option>
-										  <option value="8">8</option>
-										</select> <br>
-    <div class = "legenda">Opponent : </div> Player <input type = "radio" name = "opponent" value = "other_player">
-                                                CPU <input type = "radio" checked="checked" name = "opponent" value = "cpu"> <br/>
-    <div class = "legenda">First : </div> Player 1 <input type = "radio"  checked="checked" name="first" value = "f_me">
-                                                Opponent <input type = "radio" name="first"  value = "f_op"> <br/>
-    <div class = "legenda">AI difficulty : </div> Easy <input type = "radio"  checked="checked" name="ai_dif"  value = "d_easy">
-                                                Hard (Not implemented) <input type = "radio" name="ai_dif" value = "d_hard"> <br/>
-   
-    <br><input type="submit" onclick="createBoard();" value="Submit">
- 
-</form>
- 
-<div id = "board" ></div>
-
-
-<div id = "currentState" style = "display:none;" ></div>
-
-<br/>
-
-<div id = "giveUp" onclick="giveUp();">Give Up</div>
 </body>
 </html>

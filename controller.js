@@ -5,9 +5,7 @@ var playerTurn; //0 : ME   1 : OPPONENT
 var opp; // 0 : VS PLAYER   ;   1: VS CPU
 
 var points = [0,0,0]; // 0 - P1    1 - P2    2 - CPU
-var pointsTXT = document.getElementById("scores");							
-
-var msgBoard;	
+	
 var username;
 var password;
 var logForm;
@@ -24,16 +22,21 @@ var objPeople = [
     }
 ]
 
+window.onload = function() {
+	const pointsTXT = document.getElementById("scores");	
+	const msgBoard = document.getElementById("msgBoard");
+}
+
 function logIn() {
-    var username = document.getElementById("username").value;
-    var password = document.getElementById("password").value;
+    username = document.getElementById("username").value;
+    password = document.getElementById("password").value;
 
     for (let i = 0; i < objPeople.length; i++) {
         var l = 0;
         if (username == objPeople[i].username && password == objPeople[i].password) {
             var logForm = document.getElementById("form");
             var logGame = document.getElementById("game");
-            alert(username + " logged in!");
+			
             logForm.style.display = 'none';
             logGame.style.display = 'block';
             l = 1;
@@ -47,7 +50,6 @@ function logIn() {
 
 function createBoard() {
 	newGame = 1;
-	msgBoard = document.getElementById("msgBoard");
 	
 	msgBoard.innerHTML = "";
 	
@@ -64,9 +66,9 @@ function createBoard() {
 		return;
 	}
 	
-    var radios = document.getElementsByName('first');
+    const radios = document.getElementsByName('first');
 
-    var radios_opp = document.getElementsByName('opponent');
+    const radios_opp = document.getElementsByName('opponent');
 
 	
 	b = new Array(cols);
@@ -111,7 +113,7 @@ function createBoard() {
     }else{
 		msgBoard.innerHTML = "It is P" + (playerTurn+1) + " turn";
 	}
-    printCurrenState();
+    //printCurrenState();
 
 }
 
@@ -163,14 +165,15 @@ function dropCoin(c) {
 			newGame = -1;
 		}
         switchPlayer();
+		if(opp == 1){
+			cpuDropCoin();
+		}else if(newGame > 0){
+			msgBoard.innerHTML = "It is P" + (playerTurn+1) + " turn";
+		}
     }
-    printCurrenState();
+    //printCurrenState();
 	
-	if(opp == 1){
-		cpuDropCoin();
-	}else if(newGame > 0){
-		msgBoard.innerHTML = "It is P" + (playerTurn+1) + " turn";
-	}
+	
 
 
 }
@@ -214,7 +217,7 @@ function cpuDropCoin() {
     
 
 
-    printCurrenState();
+    //printCurrenState();
 
 }
 

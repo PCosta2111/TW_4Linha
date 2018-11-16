@@ -3,6 +3,7 @@ var newGame;
 var rows, cols;
 var playerTurn; //0 : ME   1 : OPPONENT
 var opp; // 0 : VS PLAYER   ;   1: VS CPU
+var dif; // 0 : VS PLAYER   ;   1: VS CPU
 
 var points = [0,0,0]; // 0 - P1    1 - P2    2 - CPU
 	
@@ -66,28 +67,31 @@ function createBoard() {
 		return;
 	}
 	
-    const radios = document.getElementsByName('first');
-
-    const radios_opp = document.getElementsByName('opponent');
-
-	
-	b = new Array(cols);
-	
-    //alert(radios[0].checked);
-    //alert(radios[1].value);
+    var radios = document.getElementsByName('first');
 
     if (radios[0].checked && radios[0].value == "f_me")
         playerTurn = 0;
     else
         playerTurn = 1;
+	
+    radios = document.getElementsByName('opponent');
 
-
-    if (radios_opp[0].checked && radios_opp[0].value == "other_player")
+    if (radios[0].checked && radios[0].value == "other_player")
         opp = 0;
     else
         opp = 1;
 	
+    radios = document.getElementsByName('ai_dif');
+	
+	if (radios[0].checked && radios[0].value == "d_easy")
+        dif = 0;
+    else
+        dif = 1;
+	
 
+
+	b = new Array(cols);
+	
     var r;
     var text = "";
     var rLine = [];
@@ -98,15 +102,31 @@ function createBoard() {
 			b[l][c] = -1;
 		
 	}
-
+	
+	var bDiv = document.getElementById("board");
+	while (bDiv.firstChild) {
+		bDiv.removeChild(bDiv.firstChild);
+	}
     for (let c = 0; c < cols; c++) {
-        text += "<div class = \"column\">";
-        text += "<div class = \"placer\" onclick='dropCoin(" + c + ")'></div>";
-        for (r = 0; r < rows; r++)
-            text += "<div id = '" + r + "c" + c + "' class = \"cell\"></div>";
-        text += "</div>";
+		let divCol = document.createElement("div");
+		divCol.classList.add("column");
+		bDiv.appendChild(divCol);
+		//text += "<div class = \"column\">";
+        //text += "<div class = \"placer\" onclick='dropCoin(" + c + ")'></div>";
+		let divPlacer = document.createElement("div");
+		divPlacer.classList.add("placer");
+		divPlacer.onclick = function(){ dropCoin(c); }
+		divCol.appendChild(divPlacer);
+        for (r = 0; r < rows; r++){
+            //text += "<div id = '" + r + "c" + c + "' class = \"cell\"></div>";
+			let divCell = document.createElement("div");
+			divCell.classList.add("cell");
+			divCell.id = r + "c" + c;
+			divCol.appendChild(divCell);
+		}
+        //text += "</div>";
     }
-    document.getElementById("board").innerHTML = text;
+   // document.getElementById("board").innerHTML = text;
 	
     if (playerTurn == 1 && opp == 1) {
         cpuDropCoin();
@@ -156,13 +176,18 @@ function dropCoin(c) {
             document.getElementById(drop + "c" + c).style.backgroundColor = "red";
         else
             document.getElementById(drop + "c" + c).style.backgroundColor = "yellow";
-
+		
+		//document.getElementById("currentState").innerHTML = Utility();
         if(checkWinners(drop,c)){
 			msgBoard.innerHTML = "P" + (playerTurn+1) + " WINS!!!";
 			if(playerTurn == 0)
 				points[0]++;
 			else
 				points[1]++;
+			newGame = -1;
+			return;
+		}else if(isDraw(b)){
+			msgBoard.innerHTML = "It's a draw.";
 			newGame = -1;
 			return;
 		}
@@ -184,14 +209,19 @@ function cpuDropCoin() {
 	
 	if(newGame < 0)
 		return;
-    var c = selectRand(cols);
-    var drop;
-    while(b[0][c] != -1) { 
-		c = selectRand(cols);
-	}
+	
+	var drop;
+	if( dif == 0){ //EASY DIFFICULTY - RANDOM CHOICE
+		var c = selectRand(cols);
+		while(b[0][c] != -1) { 
+			c = selectRand(cols);
+		}
+				
+	}else{	c = MinMax(); alert(c);}
+	
 	
 	let x = -1;
-	for (let i = 1; i < rows; i++) {
+    for (let i = 1; i < rows; i++) {
 		if (b[i][c] != -1) {
 			x = 1;
 			drop = i - 1;
@@ -202,80 +232,30 @@ function cpuDropCoin() {
 		drop = rows - 1;
 
 	b[drop][c] = playerTurn;
-
 	if (playerTurn == 0)
 		document.getElementById(drop + "c" + c).style.backgroundColor = "red";
 	else
 		document.getElementById(drop + "c" + c).style.backgroundColor = "yellow";
 	
+	//document.getElementById("currentState").innerHTML = Utility();
 	if(checkWinners(drop,c)){
 		msgBoard.innerHTML = "CPU has played on column " + (c+1) + ". CPU WINS!!";
 		points[2]++;
 		newGame = -1;
+		
+		return;
+	}else if(isDraw(b)){
+		msgBoard.innerHTML = "It's a draw.";
+		newGame = -1;
+		return;
 	}else if(newGame > 0){
 		switchPlayer();
 		msgBoard.innerHTML = "CPU has played on column " + (c+1) + ". It is P1 turn";
 	}
-    
 
 
     //printCurrenState();
 
-}
-
-function checkWinners(pR,pC) {
-	
-	//Vertical 
-	for(let l = pR-3; l <= pR + 3 ; l++){
-		try{
-			if(CompareFour(b[l][pC],b[l+1][pC],b[l+2][pC],b[l+3][pC])){
-			return true;}
-		}catch(e){}
-	}
-	//Horizontal 
-	for(let c = pC-3; c <= pC + 3 ; c++){
-		try{
-			if(CompareFour(b[pR][c],b[pR][c+1],b[pR][c+2],b[pR][c+3])){
-			return true;}
-		}catch(e){}
-	}
-	
-		
-	//Diagonal RIGHT
-	for(let c = pC-3; c <= pC+3 ; c++){
-		try{
-			if(CompareFour(b[c][c],b[c+1][c+1],b[c+2][c+2],b[c+3][c+3])){
-			return true;}
-		}catch(e){}
-	}
-	
-	//Diagonal LEFT DOWN
-	for(let c = 0; c <= 3 ; c++){
-		try{
-			if(CompareFour(b[pR+c][pC-c],b[pR+c-1][pC-c+1],b[pR+c-2][pC-c+2],b[pR+c-3][pC-c+3])){
-			return true;}
-		}catch(e){}
-	}
-	
-	//Check for a draw
-	for(let l = 0 ; l < rows ; l++){
-		for(let c = 0 ; c < cols ; c++)
-			if(b[l][c] == -1)
-				return false;
-		
-	}
-	
-	//If it's here, then it's a draw
-	msgBoard.innerHTML = "It's a draw.";
-	newGame = -1;
-}
-
-function CompareFour(a,b,c,d){
-	if( a == b && a == c && a== d && a != -1 && a != null){
-		return true;
-	}else{
-		return false;
-	}
 }
 
 function switchPlayer() {

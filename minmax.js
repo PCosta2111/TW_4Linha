@@ -1,22 +1,45 @@
-function GetDescendants(node) {
+var d = 1;
+
+function GetDescendants(node,p) {
 	
-	desc = Array(cols);
+	var desc = new Array(cols);
 
 	var nPos;
 	
+	for(let i = 0 ; i < cols ; i++){
+		desc[i] = new Array(cols);
+		for(let l = 0 ; l < rows ; l++){
+			desc[i][l] = new Array(cols);
+			for(let c = 0 ; c < cols ; c++)
+				desc[i][l][c] = node[l][c];
+		}
+	}
+	
+	
 	for(let c=0; c < cols ; c++) {
 		nPos = -1;
-		desc[c] = node.slice();
+		//desc[c] = node.slice();
+		//for(let i = 0 ; i < rows; i++) desc[c][i] = node[i].splice();
+		//printMat(b);
+		//printMat(desc[c]);
+		//console.log(c);
+		
 		for(let l=0;  l<rows ; l++) {
-			if( b[l][c] != -1)
+			try{
+				if( desc[c][l][c] != -1)
+					break;
+			}catch(e){ 
+				//console.log("ERROR ON L = " + l  + " AND C = " + c);
 				break;
+			}
 			nPos++;				
 		}
 		//desc[c].colPlayed=c;
 		if(nPos != -1) 
-			desc[c][nPos][c] = playerTurn;
+			desc[c][nPos][c] = p;
 		else
 			desc[c] = null;
+		
 	}
 	
 	return desc;
@@ -24,17 +47,17 @@ function GetDescendants(node) {
 	
 	
 function MinMax() {
-	var v;
+	var v = 0;
 
 	var maxP = 0;
 	var max = Number.MIN_SAFE_INTEGER - 1;
 	//state.depth=0;
-	succ = GetDescendants(b);
+	var succ = GetDescendants(b,playerTurn);
 	//alert(succ[0][0][0]);
 	for(let c=0; c<cols ; c++) {
 		if(succ[c] != null){
 			v = Min_Value(succ[c],0);
-			alert("Succ " + c + " = " + v);
+			//alert("Succ " + c + " is " + v); 
 			if(v > max) {
 				max = v;
 				maxP = c;
@@ -48,44 +71,51 @@ function MinMax() {
 
 function Max_Value(state,depth) {
 	
-	if(IsFinal() || depth >= 8){
-		return Utility();
+	if(IsFinal(state) || depth >= d){
+		//alert("Returned " + Utility(state,0) + " on max");
+		//console.log("Max returned " + Utility(state,0));
+		//printMat(state);
+		return Utility(state,0);
 	}
 	
-	succ = GetDescendants(state);
+	succ = GetDescendants(state,0);
 	
 	var v = Number.MIN_SAFE_INTEGER - 1;
 	for(let c = 0 ; c < cols ; c++) { 			
 		if(succ[c] != null){
-			v = Math.max(v, Min_Value(succ[c]),depth+1) ;
-			alert("v is " + v);
+			v = Math.max(v, Min_Value(succ[c],depth+1)) ;
+			//alert("v is " + v);
 		}
 	}
+	//console.log("->Max returned " + v);
 	return v;
 }
 
 function Min_Value(state,depth) {
 	
-	if(IsFinal() || depth >= 8){
-		return Utility();
+	if(IsFinal(state) || depth >= d){
+		//alert("Returned " + Utility(state,1) + " on min");
+		//console.log("Min returned " + Utility(state,1));
+		return Utility(state,1);
 	}
 	
-	succ = GetDescendants(state);
+	succ = GetDescendants(state,1);
 	
 	var v = Number.MAX_SAFE_INTEGER - 1;
 	for(let c = 0 ; c < cols ; c++) { 			
 		if(succ[c] != null){
-			v = Math.min(v, Max_Value(succ[c]),depth) ;
-			alert("v is " + v);
+			v = Math.min(v, Max_Value(succ[c],depth)) ;
+			//alert("v is " + v);
 		}
 	}
+	//console.log("->Min returned " + v);
 	return v;
 }
 
 
-function Utility(b1) {
+function Utility(b1,p) {
 	if( IsFinal(b1) ) {
-		if( playerTurn == 1) 
+		if( p == 1) 
 			return 512;
 		else
 			return -512;
@@ -357,4 +387,17 @@ function CompareOne(a,b,c,d) {
 	
 	if ( b == c && c == a && a == -1 && d != -1 ) return (d == 1) ? 1 : -1;	
 		else return 0;
+}
+
+
+function printMat(m){
+	var t = "";
+	for(let l = 0 ; l < rows ; l++){
+		for(let c = 0 ; c < cols ; c++){
+			t += m[l][c] + " , ";
+		}
+		t += "\n";
+	}
+	console.log(t);
+	
 }

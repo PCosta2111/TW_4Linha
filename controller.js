@@ -217,7 +217,7 @@ function cpuDropCoin() {
 			c = selectRand(cols);
 		}
 				
-	}else{	c = MinMax(); alert(c);}
+	}else{	c = MinMax(); }
 	
 	
 	let x = -1;

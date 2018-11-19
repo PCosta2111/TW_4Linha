@@ -20,7 +20,7 @@
     <form>
         <input placeholder="username" id="username">
         <input type="password" placeholder="password" id="password">
-        <button type="button" onclick="logIn()">Log In</button>
+        <button type="button" onclick="registLog()">Log In</button>
     </form>
 </div>
   
@@ -41,9 +41,9 @@
     <div id="box2">
         <h2>Points</h2>
         <div id="scores" class="legenda">
-            P1: 0 <br />
+            <!--P1: 0 <br />
             P2: 0 <br />
-            CPU: 0 <br />
+            CPU: 0 <br /-->
         </div>
     </div>
 
@@ -56,7 +56,7 @@
         <div class="legenda">Rows : </div> <select id="rows">
             <option value="4">4</option>
             <option value="5">5</option>
-            <option value="6">6</option>
+            <option value="6" selected="true">6</option>
             <option value="7">7</option>
             <option value="8">8</option>
         </select> <br>
@@ -64,7 +64,7 @@
             <option value="4">4</option>
             <option value="5">5</option>
             <option value="6">6</option>
-            <option value="7">7</option>
+            <option value="7" selected="true">7</option>
             <option value="8">8</option>
         </select> <br>
         <div class="legenda">Opponent : </div> Player <input type="radio" name="opponent" value="other_player">

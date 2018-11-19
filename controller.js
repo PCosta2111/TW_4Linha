@@ -21,6 +21,11 @@ var objPeople = [
         username: "guest",
         password: "guest"
     }
+    ,
+    {
+        username: "",
+        password: ""
+    }
 ]
 
 window.onload = function() {
@@ -133,6 +138,7 @@ function createBoard() {
     }else{
 		msgBoard.innerHTML = "It is P" + (playerTurn+1) + " turn";
 	}
+	updateScores();
     //printCurrenState();
 
 }
@@ -290,12 +296,65 @@ function giveUp(){
 	
 		newGame = -1;
 	}
+	updateScores();
 	
+}
+
+function updateScores(){
+	
+	var s = document.getElementById('scores');
+	while (s.firstChild) {
+		s.removeChild(s.firstChild);
+	}
+    data = JSON.stringify({ size : { rows: parseInt(rows), columns: parseInt(cols)}});
+    //console.log(JSON.stringify(data));
+    var t="";
+    fetch('http://twserver.alunos.dcc.fc.up.pt:8008/ranking',{
+				method: 'POST', 
+				body: data
+			})
+	.then(response => response.json())
+	.then(//response => console.log(JSON.stringify(response))
+		function(response){
+		for(var v1 in response["ranking"]){
+			let v = response["ranking"][v1];
+			//console.log("Nick: " + v["nick"] + "| Jogos: " + v["games"] + "| Victorias: " + v["victories"] + );
+			t = v["nick"] + " - " + v["games"] + " - " + v["victories"];
+			s.appendChild(document.createTextNode(t));
+			s.appendChild(document.createElement("br"));
+		}
+		
+		//s.appendChild(document.createTextNode(t));
+		}
+		 );
+    
+}
+
+function registLog(){
+	
+	data = JSON.stringify({user: document.getElementById("username").value,  pass: document.getElementById("password").value});
+	
+	var t="";
+    fetch('http://twserver.alunos.dcc.fc.up.pt:8008/register',{
+				method: 'POST', 
+				body: data
+			})
+	.then(response => response.json())
+	.then(
+		function(response){
+			try{
+				let r = response["error"];
+			}catch(e){
+				alert("erro");}
+		}
+	);
 }
 
 var boxArray = ['box1', 'box2'];
 window.addEventListener('mouseup', function () {
-	document.getElementById('scores').innerHTML = "P1: " + points[0] + " </br>P2: " + points[1] + " </br>	CPU: " + points[2] + " </br>"
+	//document.getElementById('scores').innerHTML = "P1: " + points[0] + " </br>P2: " + points[1] + " </br>	CPU: " + points[2] + " </br>"
+    
+    
     for (var i = 0; i < boxArray.length; i++) {
         var box = document.getElementById(boxArray[i]);
         if (event.target != box && event.target.parentNode != box) {

@@ -45,7 +45,6 @@ function GetDescendants(node,p) {
 	return desc;
 }
 	
-	
 function MinMax() {
 	var v = 0;
 

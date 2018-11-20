@@ -12,6 +12,7 @@ var password;
 var logForm;
 var logGame;
 
+/*
 var objPeople = [
     {
         username: "pedro",
@@ -27,32 +28,13 @@ var objPeople = [
         password: ""
     }
 ]
+*/
 
 window.onload = function() {
 	const pointsTXT = document.getElementById("scores");	
 	const msgBoard = document.getElementById("msgBoard");
 }
 
-function logIn() {
-    username = document.getElementById("username").value;
-    password = document.getElementById("password").value;
-
-    for (let i = 0; i < objPeople.length; i++) {
-        var l = 0;
-        if (username == objPeople[i].username && password == objPeople[i].password) {
-            var logForm = document.getElementById("form");
-            var logGame = document.getElementById("game");
-			
-            logForm.style.display = 'none';
-            logGame.style.display = 'block';
-            l = 1;
-            break;
-        }
-    }
-    if (l == 0) {
-        alert("Log in failed!");
-    }
-}
 
 function createBoard() {
 	newGame = 1;
@@ -330,22 +312,43 @@ function updateScores(){
     
 }
 
-function registLog(){
-	
-	data = JSON.stringify({user: document.getElementById("username").value,  pass: document.getElementById("password").value});
-	
-	var t="";
+function registLog() {
+
+    username = document.getElementById("username").value;
+    password = document.getElementById("password").value;
+    //console.log(username , password);
+
+    data = JSON.stringify({ nick: username , pass: password });
+    //console.log(data);
+
+    var t = 0;
+    var v2;
+    var v;
     fetch('http://twserver.alunos.dcc.fc.up.pt:8008/register',{
 				method: 'POST', 
 				body: data
 			})
 	.then(response => response.json())
 	.then(
-		function(response){
-			try{
-				let r = response["error"];
-			}catch(e){
-				alert("erro");}
+        function (response) {
+
+            for (v2 in response) {
+                if (v2 == "error") {
+                    v = response[v2];
+                    //alert(v2, v);
+                    t = 1;
+                    break;
+                }
+            }
+            if (t == 0) {
+                var logForm = document.getElementById("form");
+                var logGame = document.getElementById("game");
+                logForm.style.display = 'none';
+                logGame.style.display = 'block';
+            }
+            else {
+                alert(v2 + ": " + v);
+            }
 		}
 	);
 }

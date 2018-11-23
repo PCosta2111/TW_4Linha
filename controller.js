@@ -2,6 +2,8 @@ var b = [];
 var newGame;
 var rows, cols;
 var playerTurn; //0 : ME   1 : OPPONENT
+var opID;
+var currPlayerID;
 var opp; // 0 : VS PLAYER   ;   1: VS CPU
 var dif; // 0 : VS PLAYER   ;   1: VS CPU
 
@@ -11,6 +13,8 @@ var username;
 var password;
 var logForm;
 var logGame;
+
+var sessionID;
 
 /*
 var objPeople = [
@@ -35,9 +39,88 @@ window.onload = function() {
 	const msgBoard = document.getElementById("msgBoard");
 }
 
+function join(){
+	
+	var data = JSON.stringify(
+				{ group: "yeet", 
+				nick: username , 
+				pass: password, 
+				size: {
+						rows: parseInt(rows), 
+						columns: parseInt(cols)
+						}});
+	console.log(data);
+	//"group": 99, "nick": "zp", "pass": "evite", "size": { "rows": 6, "columns": 7 } 
+	fetch('http://twserver.alunos.dcc.fc.up.pt:8008/join',{
+				method: 'POST', 
+				body: data
+			})
+	.then(response => response.json())
+	.then(
+        function (response) {
+			//console.log(JSON.stringify(response));
+			sessionID = response["game"];
+		}
+	)
+	.catch(error => console.error(error));
+		
+		
+	
+	
+}
+
+function leave(){
+	
+	var data = JSON.stringify(
+				{ group: "yeet", 
+				nick: username , 
+				pass: password, 
+				game: sessionID});
+	fetch('http://twserver.alunos.dcc.fc.up.pt:8008/leave',{
+				method: 'POST', 
+				body: data
+			})
+	.then(response => response.json())
+	.then(
+        function (response) {
+			//console.log(JSON.stringify(response));
+			msgBoard.innerHTML = "Dropped out. Opponent wins.";
+			newGame = -1;
+		}
+	)
+	.catch(error => console.error(error));
+		
+		
+	
+	
+}
+
+function notify(c){
+	
+	var data = JSON.stringify(
+				{ group: "yeet", 
+				nick: username , 
+				pass: password, 
+				game: sessionID,
+				column: parseInt(c)});
+	fetch('http://twserver.alunos.dcc.fc.up.pt:8008/notify',{
+				method: 'POST', 
+				body: data
+			})
+	.then(response => response.json())
+	.then(
+        function (response) {
+			console.log(response["error"]);
+			
+			//newGame = -1;
+		}
+	)
+	.catch(error => console.error(error));
+	
+	
+}
 
 function createBoard() {
-	newGame = 1;
 	
 	msgBoard.innerHTML = "";
 	
@@ -63,11 +146,13 @@ function createBoard() {
 	
     radios = document.getElementsByName('opponent');
 
-    if (radios[0].checked && radios[0].value == "other_player")
+    if (radios[0].checked && radios[0].value == "other_player"){
         opp = 0;
-    else
+		newGame = -1;
+    }else{
         opp = 1;
-	
+		newGame = 1;
+	}
     radios = document.getElementsByName('ai_dif');
 	
 	if (radios[0].checked && radios[0].value == "d_easy")
@@ -98,30 +183,26 @@ function createBoard() {
 		let divCol = document.createElement("div");
 		divCol.classList.add("column");
 		bDiv.appendChild(divCol);
-		//text += "<div class = \"column\">";
-        //text += "<div class = \"placer\" onclick='dropCoin(" + c + ")'></div>";
 		let divPlacer = document.createElement("div");
 		divPlacer.classList.add("placer");
 		divPlacer.onclick = function(){ dropCoin(c); }
 		divCol.appendChild(divPlacer);
         for (r = 0; r < rows; r++){
-            //text += "<div id = '" + r + "c" + c + "' class = \"cell\"></div>";
 			let divCell = document.createElement("div");
 			divCell.classList.add("cell");
 			divCell.id = r + "c" + c;
 			divCol.appendChild(divCell);
 		}
-        //text += "</div>";
     }
-   // document.getElementById("board").innerHTML = text;
 	
     if (playerTurn == 1 && opp == 1) {
         cpuDropCoin();
     }else{
 		msgBoard.innerHTML = "It is P" + (playerTurn+1) + " turn";
 	}
+	if(opp == 0)
+		join();
 	updateScores();
-    //printCurrenState();
 
 }
 
@@ -143,9 +224,11 @@ function dropCoin(c) {
 	if(newGame < 0)
 		return;
 	
+	
     var drop;
     if (b[0][c] != -1) {
         alert("That column is full");
+		return;
     } else {
         let x = -1;
         for (let i = 1; i < rows; i++) {
@@ -183,14 +266,18 @@ function dropCoin(c) {
 		if(opp == 1){
 			cpuDropCoin();
 		}else if(newGame > 0){
+			notify(c);
+			
 			msgBoard.innerHTML = "It is P" + (playerTurn+1) + " turn";
 		}
     }
     //printCurrenState();
 	
-	
-
-
+	//	Playing agains another player. If I've already played, wait for a server note
+	if( opp == 0 ){
+		currPlayerID = opID;
+		newGame = -1;
+	}
 }
 
 function cpuDropCoin() {
@@ -261,22 +348,25 @@ function selectRand(n) {
 function giveUp(){
 	if(newGame < 0)
 		return;
-	
-	if(playerTurn == 0){
-		if(opp == 1){
-			msgBoard.innerHTML = "Player 1 drops out! CPU WINS!!";
-			points[2]++;
+	if(opp == 1){
+		if(playerTurn == 0){
+			if(opp == 1){
+				msgBoard.innerHTML = "Player 1 drops out! CPU WINS!!";
+				points[2]++;
+			}else{
+				msgBoard.innerHTML = "Player 1 drops out! P2 WINS!!";
+				points[1]++;
+			}
+			newGame = -1;
 		}else{
-			msgBoard.innerHTML = "Player 1 drops out! P2 WINS!!";
-			points[1]++;
-		}
-		newGame = -1;
-	}else{
+			
+			msgBoard.innerHTML = "Player 2 drops out! P1 WINS!!";
+			points[0]++;
 		
-		msgBoard.innerHTML = "Player 2 drops out! P1 WINS!!";
-		points[0]++;
-	
-		newGame = -1;
+			newGame = -1;
+		}
+	}else{
+		leave();
 	}
 	updateScores();
 	
@@ -318,7 +408,7 @@ function registLog() {
     password = document.getElementById("password").value;
     //console.log(username , password);
 
-    data = JSON.stringify({ nick: username , pass: password });
+    var data = JSON.stringify({ nick: username , pass: password });
     //console.log(data);
 
     var t = 0;
@@ -331,7 +421,6 @@ function registLog() {
 	.then(response => response.json())
 	.then(
         function (response) {
-
             for (v2 in response) {
                 if (v2 == "error") {
                     v = response[v2];

@@ -13,7 +13,7 @@ var username;
 var password;
 var logForm;
 var logGame;
-
+var eventSource;
 var sessionID;
 
 /*
@@ -58,12 +58,19 @@ function join(){
 	.then(response => response.json())
 	.then(
         function (response) {
+			if(data == undefined)
+				return;
+			if(data.hasOwnProperty('error')){
+				console.log(data['error']);
+				return;
+			}
 			//console.log(JSON.stringify(response));
 			sessionID = response["game"];
+			update();
 		}
 	)
-	.catch(error => console.error(error));
-		
+	.catch(error => console.log(error));
+	
 		
 	
 	
@@ -86,6 +93,7 @@ function leave(){
 			//console.log(JSON.stringify(response));
 			msgBoard.innerHTML = "Dropped out. Opponent wins.";
 			newGame = -1;
+			update();
 		}
 	)
 	.catch(error => console.error(error));
@@ -111,13 +119,70 @@ function notify(c){
 	.then(
         function (response) {
 			console.log(response["error"]);
-			
+			update();
 			//newGame = -1;
 		}
 	)
 	.catch(error => console.error(error));
 	
 	
+}
+
+function update(){
+	eventSource = new EventSource('http://twserver.alunos.dcc.fc.up.pt:8008/update?nick=' + username + '&game=' + sessionID);
+	eventSource.onmessage = function(event) {
+		//console.log(data);
+		var data = JSON.parse(event.data);
+		console.log(data);
+		
+		if(data == undefined)
+			return;
+		if(data.hasOwnProperty('error')){
+			alert(data['error']);
+			return;
+		}
+		console.log(data["board"]);
+		for(let l = 0 ; l < rows ; l++){
+			for(let c = 0 ; c < cols ; c++){
+				if(!data.hasOwnProperty('column')){
+					b[l][c] = -1;
+				}else{
+					if(data['board'][l][c] == null){
+						b[l][c] = -1;
+					}else if(data["board"][l][c] == username){
+						document.getElementById(l + "c" + c).style.backgroundColor = "red";
+						b[l][c] = 0;
+					}else{
+						document.getElementById(l + "c" + c).style.backgroundColor = "yellow";
+						b[l][c] = 1;
+					}
+
+				}
+			}
+		}
+		if(data["turn"] == username){
+			playerTurn = 0;
+		}else{
+			playerTurn = 1;
+		}
+		
+		if(data["turn"] == username){
+			playerTurn = 0;
+		}else{
+			playerTurn = 1;
+		}
+		if(data.hasOwnProperty('winner')){
+			if(data["winner"] == username){
+				msgBoard.innerHTML = "You won!";
+			}else{
+				msgBoard.innerHTML = data["winner"] + " won...";
+			}
+			
+			newGame = -1;
+		}
+	}
+	
+	//eventSource.close();
 }
 
 function createBoard() {
@@ -148,7 +213,7 @@ function createBoard() {
 
     if (radios[0].checked && radios[0].value == "other_player"){
         opp = 0;
-		newGame = -1;
+		//newGame = -1;
     }else{
         opp = 1;
 		newGame = 1;
@@ -200,8 +265,10 @@ function createBoard() {
     }else{
 		msgBoard.innerHTML = "It is P" + (playerTurn+1) + " turn";
 	}
-	if(opp == 0)
+	if(opp == 0){
 		join();
+		//update();
+	}
 	updateScores();
 
 }
@@ -223,7 +290,8 @@ function printCurrenState() {
 function dropCoin(c) {
 	if(newGame < 0)
 		return;
-	
+	if(playerTurn != 0)
+		return;
 	
     var drop;
     if (b[0][c] != -1) {
@@ -247,7 +315,8 @@ function dropCoin(c) {
             document.getElementById(drop + "c" + c).style.backgroundColor = "red";
         else
             document.getElementById(drop + "c" + c).style.backgroundColor = "yellow";
-		
+		if(opp == 0)
+			notify(c);
 		//document.getElementById("currentState").innerHTML = Utility();
         if(checkWinners(drop,c)){
 			msgBoard.innerHTML = "P" + (playerTurn+1) + " WINS!!!";
@@ -266,18 +335,11 @@ function dropCoin(c) {
 		if(opp == 1){
 			cpuDropCoin();
 		}else if(newGame > 0){
-			notify(c);
 			
 			msgBoard.innerHTML = "It is P" + (playerTurn+1) + " turn";
 		}
     }
     //printCurrenState();
-	
-	//	Playing agains another player. If I've already played, wait for a server note
-	if( opp == 0 ){
-		currPlayerID = opID;
-		newGame = -1;
-	}
 }
 
 function cpuDropCoin() {

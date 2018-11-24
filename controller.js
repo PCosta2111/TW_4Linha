@@ -37,6 +37,35 @@ var objPeople = [
 window.onload = function() {
 	const pointsTXT = document.getElementById("scores");	
 	const msgBoard = document.getElementById("msgBoard");
+	
+	document.getElementById("leave").onclick = function(){leave()};
+}
+
+function leave(){
+	
+	var data = JSON.stringify(
+				{ group: "yeet", 
+				nick: username , 
+				pass: password, 
+				game: sessionID});
+	fetch('http://twserver.alunos.dcc.fc.up.pt:8008/leave',{
+				method: 'POST', 
+				body: data
+			})
+	.then(response => response.json())
+	.then(
+        function (response) {
+			//console.log(JSON.stringify(response));
+			msgBoard.innerHTML = "Dropped out. Opponent wins.";
+			newGame = -1;
+			update();
+		}
+	)
+	.catch(error => console.error(error));
+		
+		
+	
+	
 }
 
 function join(){
@@ -71,33 +100,6 @@ function join(){
 	)
 	.catch(error => console.log(error));
 	
-		
-	
-	
-}
-
-function leave(){
-	
-	var data = JSON.stringify(
-				{ group: "yeet", 
-				nick: username , 
-				pass: password, 
-				game: sessionID});
-	fetch('http://twserver.alunos.dcc.fc.up.pt:8008/leave',{
-				method: 'POST', 
-				body: data
-			})
-	.then(response => response.json())
-	.then(
-        function (response) {
-			//console.log(JSON.stringify(response));
-			msgBoard.innerHTML = "Dropped out. Opponent wins.";
-			newGame = -1;
-			update();
-		}
-	)
-	.catch(error => console.error(error));
-		
 		
 	
 	

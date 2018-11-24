@@ -75,33 +75,11 @@
         Hard <input type="radio" name="ai_dif" value="d_hard"> <br />
 
         <br><input type="submit" id="newGame" value="New game" onclick="createBoard();">
-
-    </form>
-    <div id="board"></div>
-	<br/>
-	<form onsubmit="return false;" id="form_join">
-
-        <div class="legenda">Rows : </div> <select id="rowsJOIN">
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6" selected="true">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-        </select> <br>
-        <div class="legenda">Columns : </div> <select id="colsJOIN">
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7" selected="true">7</option>
-            <option value="8">8</option>
-        </select> <br>
-        <div class="legenda">Game ID : </div> <input type="text" name="join_ID">
-
-        <br><input type="submit" id="newGame" value="Join" onclick="joinOngoing();">
         <br><input type="submit" id="leave" value="Leave" onclick="leave();">
 
     </form>
-
+    <div id="board"></div>
+	
     <div id="currentState" style="display:none;"></div>
     <br />
     <div id="giveUp" onclick="giveUp();">Give Up</div>

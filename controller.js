@@ -37,7 +37,7 @@ var objPeople = [
 window.onload = function() {
 	const pointsTXT = document.getElementById("scores");	
 	const msgBoard = document.getElementById("msgBoard");
-	
+	//update();
 	document.getElementById("leave").onclick = function(){leave()};
 }
 
@@ -58,7 +58,7 @@ function leave(){
 			//console.log(JSON.stringify(response));
 			msgBoard.innerHTML = "Dropped out. Opponent wins.";
 			newGame = -1;
-			update();
+			//update();
 		}
 	)
 	.catch(error => console.error(error));
@@ -95,6 +95,7 @@ function join(){
 			}
 			//console.log(JSON.stringify(response));
 			sessionID = response["game"];
+			newGame = 1;
 			update();
 		}
 	)
@@ -121,7 +122,7 @@ function notify(c){
 	.then(
         function (response) {
 			console.log(response["error"]);
-			update();
+			//update();
 			//newGame = -1;
 		}
 	)
@@ -143,24 +144,33 @@ function update(){
 			alert(data['error']);
 			return;
 		}
-		console.log(data["board"]);
+		var t = "";
 		for(let l = 0 ; l < rows ; l++){
 			for(let c = 0 ; c < cols ; c++){
-				if(!data.hasOwnProperty('column')){
-					b[l][c] = -1;
-				}else{
-					if(data['board'][l][c] == null){
-						b[l][c] = -1;
-					}else if(data["board"][l][c] == username){
-						document.getElementById(l + "c" + c).style.backgroundColor = "red";
-						b[l][c] = 0;
-					}else{
-						document.getElementById(l + "c" + c).style.backgroundColor = "yellow";
-						b[l][c] = 1;
-					}
-
-				}
+				t += data["board"][l][c] + " ";
 			}
+			t+="\n";
+		}
+		//console.log(t);
+		for(let l = 0 ; l < rows ; l++){
+			for(let c = 0 ; c < cols ; c++){
+				t += b[l][c] + " ";
+			}
+			t += "\n";
+		}
+		console.log(t);
+		var answer = false;
+		for(let l = 0 ; l < rows ; l++){
+			if(b[l][data['column']] != -1){
+				answer = true;
+				b[l-1][data['column']] = 1;
+				document.getElementById((l-1) + "c" + (data['column'])).style.backgroundColor = "yellow";
+				break;
+			}
+		}
+		if(!answer){
+			b[rows-1][data['column']] = 1;
+			document.getElementById((rows-1) + "c" + (data['column'])).style.backgroundColor = "yellow";
 		}
 		if(data["turn"] == username){
 			playerTurn = 0;
@@ -313,10 +323,7 @@ function dropCoin(c) {
 
         b[drop][c] = playerTurn;
 
-        if (playerTurn == 0)
-            document.getElementById(drop + "c" + c).style.backgroundColor = "red";
-        else
-            document.getElementById(drop + "c" + c).style.backgroundColor = "yellow";
+        document.getElementById(drop + "c" + c).style.backgroundColor = "red";
 		if(opp == 0)
 			notify(c);
 		//document.getElementById("currentState").innerHTML = Utility();

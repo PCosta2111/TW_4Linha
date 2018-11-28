@@ -160,17 +160,19 @@ function update(){
 		}
 		console.log(t);
 		var answer = false;
-		for(let l = 0 ; l < rows ; l++){
-			if(b[l][data['column']] != -1){
-				answer = true;
-				b[l-1][data['column']] = 1;
-				document.getElementById((l-1) + "c" + (data['column'])).style.backgroundColor = "yellow";
-				break;
+		if(data["turn"] == username){
+			for(let l = 0 ; l < rows ; l++){
+				if(b[l][data['column']] != -1){
+					answer = true;
+					b[l-1][data['column']] = 1;
+					document.getElementById((l-1) + "c" + (data['column'])).style.backgroundColor = "yellow";
+					break;
+				}
 			}
-		}
-		if(!answer){
-			b[rows-1][data['column']] = 1;
-			document.getElementById((rows-1) + "c" + (data['column'])).style.backgroundColor = "yellow";
+			if(!answer){
+				b[rows-1][data['column']] = 1;
+				document.getElementById((rows-1) + "c" + (data['column'])).style.backgroundColor = "yellow";
+			}
 		}
 		if(data["turn"] == username){
 			playerTurn = 0;

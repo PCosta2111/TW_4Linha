@@ -176,12 +176,21 @@ function update(){
 		}else{
 			playerTurn = 1;
 		}
-		if(data.hasOwnProperty('winner')){
+        if (data.hasOwnProperty('winner')) {
+            //console.log(data);
 			if(data["winner"] == username){
 				msgBoard.innerHTML = "You won!";
 				
 			}else{
-				msgBoard.innerHTML = "You lost...";
+                msgBoard.innerHTML = "You lost...";
+                for (let l = 0; l < rows; l++) {
+                    if (b[l][data['column']] != -1) {
+                        answer = true;
+                        b[l - 1][data['column']] = 1;
+                        document.getElementById((l - 1) + "c" + (data['column'])).style.backgroundColor = "yellow";
+                        break;
+                    }
+                }
 			}
 			sessionID = undefined;
 			newGame = -1;

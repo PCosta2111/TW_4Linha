@@ -42,26 +42,27 @@ window.onload = function() {
 }
 
 function leave(){
-	
-	var data = JSON.stringify(
-				{ group: "yeet", 
-				nick: username , 
-				pass: password, 
-				game: sessionID});
-	fetch('http://twserver.alunos.dcc.fc.up.pt:8008/leave',{
-				method: 'POST', 
-				body: data
-			})
-	.then(response => response.json())
-	.then(
-        function (response) {
-			//console.log(JSON.stringify(response));
-			msgBoard.innerHTML = "Dropped out. Opponent wins.";
-			newGame = -1;
-			//update();
-		}
-	)
-	.catch(error => console.error(error));
+	if(sessionID != undefined){
+		var data = JSON.stringify(
+					{ group: "yeet", 
+					nick: username , 
+					pass: password, 
+					game: sessionID});
+		fetch('http://twserver.alunos.dcc.fc.up.pt:8008/leave',{
+					method: 'POST', 
+					body: data
+				})
+		.then(response => response.json())
+		.then(
+			function (response) {
+				//console.log(JSON.stringify(response));
+				msgBoard.innerHTML = "Dropped out. Opponent wins.";
+				newGame = -1;
+				//update();
+			}
+		)
+		.catch(error => console.error(error));
+	}
 		
 		
 	
@@ -94,8 +95,9 @@ function join(){
 				return;
 			}
 			//console.log(JSON.stringify(response));
+			msgBoard.innerHTML = "Waiting for a player...";
 			sessionID = response["game"];
-			newGame = 1;
+			newGame = -1;
 			update();
 		}
 	)
@@ -137,30 +139,16 @@ function update(){
 		//console.log(data);
 		var data = JSON.parse(event.data);
 		console.log(data);
-		
+		newGame = 1;
 		if(data == undefined)
 			return;
 		if(data.hasOwnProperty('error')){
 			alert(data['error']);
 			return;
 		}
-		var t = "";
-		for(let l = 0 ; l < rows ; l++){
-			for(let c = 0 ; c < cols ; c++){
-				t += data["board"][l][c] + " ";
-			}
-			t+="\n";
-		}
-		//console.log(t);
-		for(let l = 0 ; l < rows ; l++){
-			for(let c = 0 ; c < cols ; c++){
-				t += b[l][c] + " ";
-			}
-			t += "\n";
-		}
-		console.log(t);
+		
 		var answer = false;
-		if(data["turn"] == username){
+		if(data["turn"] == username && data.hasOwnProperty('column')){
 			for(let l = 0 ; l < rows ; l++){
 				if(b[l][data['column']] != -1){
 					answer = true;
@@ -175,8 +163,10 @@ function update(){
 			}
 		}
 		if(data["turn"] == username){
+			msgBoard.innerHTML = "It is your turn to play.";
 			playerTurn = 0;
 		}else{
+			msgBoard.innerHTML = "Opponent is playing.";
 			playerTurn = 1;
 		}
 		
@@ -188,10 +178,11 @@ function update(){
 		if(data.hasOwnProperty('winner')){
 			if(data["winner"] == username){
 				msgBoard.innerHTML = "You won!";
+				
 			}else{
-				msgBoard.innerHTML = data["winner"] + " won...";
+				msgBoard.innerHTML = "You lost...";
 			}
-			
+			sessionID = undefined;
 			newGame = -1;
 		}
 	}

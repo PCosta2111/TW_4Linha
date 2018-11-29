@@ -59,6 +59,7 @@ function leave(){
 				msgBoard.innerHTML = "Dropped out. Opponent wins.";
 				newGame = -1;
 				//update();
+				eventSource.close();
 			}
 		)
 		.catch(error => console.error(error));
@@ -184,6 +185,7 @@ function update(){
 			}
 			sessionID = undefined;
 			newGame = -1;
+			eventSource.close();
 		}
 	}
 	

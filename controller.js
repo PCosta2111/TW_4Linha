@@ -44,7 +44,7 @@ window.onload = function() {
 function leave(){
 	if(sessionID != undefined){
 		var data = JSON.stringify(
-					{ group: "yeet", 
+					{ group: "47", 
 					nick: username , 
 					pass: password, 
 					game: sessionID});
@@ -73,7 +73,7 @@ function leave(){
 function join(){
 	
 	var data = JSON.stringify(
-				{ group: "yeet", 
+				{ group: "47", 
 				nick: username , 
 				pass: password, 
 				size: {
@@ -112,7 +112,7 @@ function join(){
 function notify(c){
 	
 	var data = JSON.stringify(
-				{ group: "yeet", 
+				{ group: "47", 
 				nick: username , 
 				pass: password, 
 				game: sessionID,

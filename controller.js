@@ -179,8 +179,10 @@ function update(){
         if (data.hasOwnProperty('winner')) {
             //console.log(data);
             if(data["winner"] == null){
+				
                 msgBoard.innerHTML = "It's a draw.";
-                document.getElementById(0 + "c" + (data['column'])).style.backgroundColor = "yellow";
+				if(playerTurn == 1)
+					document.getElementById(0 + "c" + (data['column'])).style.backgroundColor = "yellow";
             }
 			else if(data["winner"] == username){
 				msgBoard.innerHTML = "You won!";

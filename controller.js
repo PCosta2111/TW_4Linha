@@ -8,7 +8,7 @@ var opp; // 0 : VS PLAYER   ;   1: VS CPU
 var dif; // 0 : VS PLAYER   ;   1: VS CPU
 
 var points = [0,0,0]; // 0 - P1    1 - P2    2 - CPU
-	
+var sv = 'http://localhost:8149';
 var username;
 var password;
 var logForm;
@@ -462,7 +462,7 @@ function updateScores(){
     data = JSON.stringify({ size : { rows: parseInt(rows), columns: parseInt(cols)}});
     //console.log(JSON.stringify(data));
     var t="";
-    fetch('http://twserver.alunos.dcc.fc.up.pt:8008/ranking',{
+    fetch(sv + '/ranking',{
 				method: 'POST', 
 				body: data
 			})
@@ -495,13 +495,14 @@ function registLog() {
     var t = 0;
     var v2;
     var v;
-    fetch('http://twserver.alunos.dcc.fc.up.pt:8008/register',{
+    fetch(sv + '/register',{
 				method: 'POST', 
 				body: data
 			})
 	.then(response => response.json())
 	.then(
         function (response) {
+			console.log(response);
             for (v2 in response) {
                 if (v2 == "error") {
                     v = response[v2];

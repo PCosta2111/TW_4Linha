@@ -55,7 +55,7 @@ function leave(){
 		.then(response => response.json())
 		.then(
 			function (response) {
-				//console.log(JSON.stringify(response));
+				console.log(JSON.stringify(response));
 				msgBoard.innerHTML = "Dropped out. Opponent wins.";
 				newGame = -1;
 				//update();
@@ -82,7 +82,7 @@ function join(){
 						}});
 	console.log(data);
 	//"group": 99, "nick": "zp", "pass": "evite", "size": { "rows": 6, "columns": 7 } 
-	fetch('http://twserver.alunos.dcc.fc.up.pt:8008/join',{
+	fetch(sv + '/join',{
 				method: 'POST', 
 				body: data
 			})

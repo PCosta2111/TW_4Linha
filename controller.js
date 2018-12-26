@@ -117,7 +117,7 @@ function notify(c){
 				pass: password, 
 				game: sessionID,
 				column: parseInt(c)});
-	fetch('http://twserver.alunos.dcc.fc.up.pt:8008/notify',{
+	fetch(sv + '/notify',{
 				method: 'POST', 
 				body: data
 			})
@@ -135,7 +135,7 @@ function notify(c){
 }
 
 function update(){
-	eventSource = new EventSource('http://twserver.alunos.dcc.fc.up.pt:8008/update?nick=' + username + '&game=' + sessionID);
+	eventSource = new EventSource(sv + '/update?nick=' + username + '&game=' + sessionID);
 	eventSource.onmessage = function(event) {
 		//console.log(data);
 		var data = JSON.parse(event.data);
